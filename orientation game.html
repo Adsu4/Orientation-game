@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The GEC Dilemma - Interactive Game Plan</title>
+    <!-- Chosen Palette: Professional & Trustworthy -->
+    <!-- Application Structure Plan: The application remains a single-page guide for the game master. The linear flow from high-level summary to detailed debriefing is maintained, but with enhanced visual separation and interactivity. The interactive simulator is now more central, with a more sophisticated visual display for the scoring outcomes. The design prioritizes clarity and visual hierarchy, ensuring key information is easily scannable and digestible. -->
+    <!-- Visualization & Content Choices: The core interactive element is still the scoring simulator. To make it more detailed, the interface is redesigned with distinct, color-coded sections for 'Cooperators' and 'Traitors'. The bar chart is now complemented by a clear textual breakdown, which is dynamically updated with a more professional aesthetic. The use of Tailwind's utility classes for shadows, gradients, and rounded corners elevates the overall look and feel. The buttons for selecting the scenario are also more visually distinct to improve usability. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #334155;
+        }
+        .section-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease-in-out;
+            transform: translateY(0);
+        }
+        .section-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        .control-btn {
+            transition: all 0.2s ease-in-out;
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .control-btn.active {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .chart-container {
+            position: relative;
+            height: 350px;
+            max-width: 600px;
+            margin: auto;
+        }
+        /* Gradient for header */
+        .header-bg {
+            background: linear-gradient(135deg, #1e3a8a, #155e75);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 py-8 md:py-12 lg:py-16">
+
+        <header class="text-center mb-12 md:mb-20">
+            <h1 class="text-5xl md:text-7xl font-extrabold header-bg leading-tight">The Dilemma</h1>
+            <p class="mt-4 text-xl md:text-2xl text-gray-600 font-medium">An Interactive Guide to the Orientation Game</p>
+        </header>
+
+        <main class="space-y-12 md:space-y-20">
+            <!-- Executive Summary Section -->
+            <section id="summary" class="max-w-4xl mx-auto section-card rounded-3xl p-8 md:p-12">
+                <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">1. Executive Summary</h2>
+                <div class="space-y-4 text-lg text-gray-700 leading-relaxed">
+                    <p>The GEC Dilemma is an experiential learning game designed to provide freshers with a powerful lesson on the critical importance of collaboration, trust, and long-term thinking. Through a simple, engaging simulation, it highlights how individual decisions, while seemingly beneficial in the short term, can negatively impact the collective success of the entire organization.</p>
+                </div>
+            </section>
+
+            <!-- Game Concept & Mechanics Section -->
+            <section id="concept" class="max-w-4xl mx-auto section-card rounded-3xl p-8 md:p-12">
+                <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">2. Game Concept & Core Mechanics</h2>
+                <div class="space-y-4 text-lg text-gray-700 leading-relaxed">
+                    <p>The game's theme places participants as four competing internal teams (A, B, C, D) within a large company, <b>GEC Inc.</b> The ultimate objective is for all teams to contribute to the overall success of the company, not just their own scores.</p>
+                    <p>The central conflict, or The Dilemma, is presented in each round: teams must choose between <b>cooperating (the Red Card)</b> or <b>acting selfishly (the Black Card)</b>. The total company score is a direct result of the collective choices made by all four teams, demonstrating in real-time that a lack of trust and cooperation inevitably leads to a negative outcome for everyone involved.</p>
+                </div>
+            </section>
+
+            <!-- Interactive Score Simulator Section -->
+            <section id="simulator" class="bg-blue-900 section-card rounded-3xl text-white p-8 md:p-12 mb-12 md:mb-16 shadow-2xl">
+                <h2 class="text-3xl font-bold text-center mb-8">3. Interactive Score Simulator</h2>
+                <p class="text-center text-blue-200 mb-10 text-lg">See how different choices affect the company and team scores. Click a button below to explore each scenario.</p>
+                
+                <div class="flex justify-center flex-wrap gap-4 md:gap-5 mb-10" id="controls">
+                    <!-- Updated the buttons to have a consistent base style for dynamic color changes -->
+                    <button data-value="0" class="control-btn bg-gray-700 hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-full shadow-lg">0 Black</button>
+                    <button data-value="1" class="control-btn bg-gray-700 hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-full shadow-lg">1 Black</button>
+                    <button data-value="2" class="control-btn bg-gray-700 hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-full shadow-lg">2 Black</button>
+                    <button data-value="3" class="control-btn bg-gray-700 hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-full shadow-lg">3 Black</button>
+                    <button data-value="4" class="control-btn bg-gray-700 hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-full shadow-lg">4 Black</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                    <div>
+                        <div id="scenario-output" class="bg-blue-800 p-6 md:p-8 rounded-2xl border-2 border-blue-700 shadow-inner">
+                            <h3 class="text-xl md:text-2xl font-semibold mb-3">Scenario: <span id="scenario-name" class="font-bold text-yellow-300"></span></h3>
+                            <p class="text-sm md:text-base text-blue-200 mb-5"><span id="scenario-choices"></span></p>
+                            
+                            <div class="bg-blue-700 rounded-lg p-5 space-y-4">
+                                <div>
+                                    <p class="font-semibold text-blue-100 text-lg">Team Score Breakdown:</p>
+                                    <p class="text-xl mt-1" id="team-score-output"></p>
+                                </div>
+                                <div class="border-t border-blue-600 pt-5">
+                                    <p class="font-semibold text-blue-100 text-lg">Total GEC Inc. Score:</p>
+                                    <p class="text-4xl font-extrabold mt-1" id="company-score-output"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="scoreChart"></canvas>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Game Flow & Logistics Section -->
+            <section id="flow" class="max-w-4xl mx-auto section-card rounded-3xl p-8 md:p-12">
+                <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">4. Game Flow & Logistics</h2>
+                <ol class="space-y-6 md:space-y-8 text-lg">
+                    <li class="flex items-start">
+                        <div class="bg-blue-600 text-white h-10 w-10 rounded-full flex items-center justify-center font-bold text-xl mr-5 flex-shrink-0">1</div>
+                        <div>
+                            <strong class="text-gray-800 font-semibold">Internal Discussion (30s):</strong>
+                            <p class="text-gray-600">Teams convene privately to strategize their card choice for the round.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div class="bg-blue-600 text-white h-10 w-10 rounded-full flex items-center justify-center font-bold text-xl mr-5 flex-shrink-0">2</div>
+                        <div>
+                            <strong class="text-gray-800 font-semibold">Representative Meeting (60s):</strong>
+                            <p class="text-gray-600">A representative from each team meets in a central location to negotiate a collective, collaborative strategy. This is where trust is built or broken.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div class="bg-blue-600 text-white h-10 w-10 rounded-full flex items-center justify-center font-bold text-xl mr-5 flex-shrink-0">3</div>
+                         <div>
+                            <strong class="text-gray-800 font-semibold">Final Decision (30s):</strong>
+                            <p class="text-gray-600">Representatives return to their teams for the final, private decision. The tension lies in whether teams will honor the negotiated agreement.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div class="bg-blue-600 text-white h-10 w-10 rounded-full flex items-center justify-center font-bold text-xl mr-5 flex-shrink-0">4</div>
+                        <div>
+                            <strong class="text-gray-800 font-semibold">Reveal & Scoring:</strong>
+                            <p class="text-gray-600">Teams reveal their cards simultaneously. The scores are calculated based on the collective result and updated on the scoreboard.</p>
+                        </div>
+                    </li>
+                     <li class="flex items-start bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-md shadow-inner">
+                        <div class="text-yellow-600 font-bold text-xl mr-4 flex-shrink-0">💡</div>
+                        <div>
+                            <strong class="text-yellow-800 font-semibold">Mid-Game Twist:</strong>
+                            <p class="text-yellow-700">After a few rounds, the Game Master should pause the game to explicitly highlight the negative company score. This is a critical moment to provoke a behavioral change in the participants.</p>
+                        </div>
+                    </li>
+                </ol>
+            </section>
+
+            <!-- Debriefing & Takeaways Section -->
+            <section id="debrief" class="max-w-4xl mx-auto section-card rounded-3xl p-8 md:p-12">
+                <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">5. Debriefing & Key Takeaways</h2>
+                 <div class="space-y-4 text-lg text-gray-700 leading-relaxed">
+                    <p>The debrief is the most vital part of the event. It is during this time that the game's message is reinforced. Begin by asking open-ended questions about how participants felt, their thought processes, and their decision-making. Reveal the stark contrast between the final company score and the potential score if everyone had consistently cooperated.</p>
+                    <p>Explain that the game is a metaphor for real-world projects and business. Emphasize that in a truly successful organization, prioritizing an individual's "win" over the collective good is a form of sabotage that leads to shared failure. True success is built on collaboration and trust, and not on selfish, short-term gains.</p>
+                    <p>To reinforce this, the prize consists of refreshments for all participants. There is no single winner; the prize is awarded to everyone for "taking the lesson." This highlights that the greatest reward is the shared experience and valuable knowledge gained together.</p>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="text-center mt-12 md:mt-16 pt-8 border-t border-gray-300">
+            <p class="text-gray-500 text-sm">Game Design Document by Adharsh Suvi for the Ideator Club</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const scoreData = [
+            {
+                name: 'All Cooperation',
+                blackCount: 0,
+                redCount: 4,
+                blackScore: null,
+                redScore: 1,
+                companyScore: 4,
+            },
+            {
+                name: 'One Traitor',
+                blackCount: 1,
+                redCount: 3,
+                blackScore: 3,
+                redScore: -2,
+                companyScore: -3,
+            },
+            {
+                name: 'Divided',
+                blackCount: 2,
+                redCount: 2,
+                blackScore: 2,
+                redScore: -3,
+                companyScore: -2,
+            },
+            {
+                name: 'More Traitors',
+                blackCount: 3,
+                redCount: 1,
+                blackScore: 1,
+                redScore: -5,
+                companyScore: -2,
+            },
+            {
+                name: 'All Selfish',
+                blackCount: 4,
+                redCount: 0,
+                blackScore: -2,
+                redScore: null,
+                companyScore: -8,
+            }
+        ];
+
+        const scenarioNameEl = document.getElementById('scenario-name');
+        const scenarioChoicesEl = document.getElementById('scenario-choices');
+        const teamScoreOutputEl = document.getElementById('team-score-output');
+        const companyScoreOutputEl = document.getElementById('company-score-output');
+        const controlsContainer = document.getElementById('controls');
+        
+        const ctx = document.getElementById('scoreChart').getContext('2d');
+        let scoreChart;
+
+        function initializeChart() {
+            scoreChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Individual Team Score', // Updated label for clarity
+                        data: [],
+                        backgroundColor: [],
+                        borderColor: [],
+                        borderWidth: 1,
+                        borderRadius: 5,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true, // Forces the axis to start at 0
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#e2e8f0',
+                            }
+                        },
+                        x: {
+                             grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#e2e8f0',
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y + ' points';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateScenario(blackCardCount) {
+            const scenario = scoreData.find(s => s.blackCount === parseInt(blackCardCount));
+            if (!scenario) return;
+
+            scenarioNameEl.textContent = scenario.name;
+            scenarioChoicesEl.textContent = `${scenario.redCount} Red, ${scenario.blackCount} Black`;
+            
+            let teamScoreText = '';
+            if (scenario.redCount > 0) {
+                 teamScoreText += `<div class="flex justify-between items-center"><span class="font-semibold text-blue-100">Cooperating Team(s):</span> <span class="font-bold text-lg ${scenario.redScore > 0 ? 'text-green-300' : 'text-red-400'}">${scenario.redScore > 0 ? '+' : ''}${scenario.redScore} points each</span></div>`;
+            }
+            if (scenario.blackCount > 0) {
+                 teamScoreText += `<div class="flex justify-between items-center"><span class="font-semibold text-blue-100">Selfish Team(s):</span> <span class="font-bold text-lg ${scenario.blackScore > 0 ? 'text-green-300' : 'text-red-400'}">${scenario.blackScore > 0 ? '+' : ''}${scenario.blackScore} points each</span></div>`;
+            }
+            teamScoreOutputEl.innerHTML = teamScoreText;
+
+            companyScoreOutputEl.textContent = `${scenario.companyScore > 0 ? '+' : ''}${scenario.companyScore}`;
+            companyScoreOutputEl.className = `text-4xl font-extrabold mt-1 ${scenario.companyScore > 0 ? 'text-green-300' : 'text-red-400'}`;
+
+            updateChart(scenario);
+            
+            // Bug Fix: dynamically apply background color based on active state
+            document.querySelectorAll('.control-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                btn.classList.remove('bg-blue-800', 'hover:bg-blue-900');
+                btn.classList.add('bg-gray-700', 'hover:bg-gray-800');
+            });
+
+            const activeBtn = document.querySelector(`[data-value="${blackCardCount}"]`);
+            activeBtn.classList.add('active');
+            activeBtn.classList.remove('bg-gray-700', 'hover:bg-gray-800');
+
+            if (parseInt(blackCardCount) === 0) {
+                activeBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+            } else {
+                activeBtn.classList.add('bg-blue-800', 'hover:bg-blue-900');
+            }
+        }
+
+        function updateChart(scenario) {
+            const labels = [];
+            const data = [];
+            const bgColors = [];
+            const borderColors = [];
+
+            // Updated logic to show per-team score
+            if (scenario.redCount > 0) {
+                labels.push('Cooperating Team');
+                data.push(scenario.redScore); 
+                bgColors.push('rgba(22, 163, 74, 0.8)');
+                borderColors.push('rgba(22, 163, 74, 1)');
+            }
+            if (scenario.blackCount > 0) {
+                labels.push('Selfish Team');
+                data.push(scenario.blackScore); 
+                bgColors.push('rgba(239, 68, 68, 0.8)');
+                borderColors.push('rgba(239, 68, 68, 1)');
+            }
+            
+            scoreChart.data.labels = labels;
+            scoreChart.data.datasets[0].data = data;
+            scoreChart.data.datasets[0].backgroundColor = bgColors;
+            scoreChart.data.datasets[0].borderColor = borderColors;
+            
+            // Remove previous min value fix as beginAtZero is a better solution.
+            scoreChart.options.scales.y.min = undefined;
+
+            scoreChart.update();
+        }
+
+        controlsContainer.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                const value = e.target.dataset.value;
+                updateScenario(value);
+            }
+        });
+        
+        window.addEventListener('load', () => {
+            initializeChart();
+            updateScenario('0');
+        });
+
+    </script>
+</body>
+</html>
